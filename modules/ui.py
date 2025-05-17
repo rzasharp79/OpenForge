@@ -540,6 +540,14 @@ def create_ui():
             toprow.token_button.click(fn=wrap_queued_call(update_token_counter), inputs=[toprow.prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.token_counter])
             toprow.negative_token_button.click(fn=wrap_queued_call(update_negative_prompt_token_counter), inputs=[toprow.negative_prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.negative_token_counter])
 
+            toprow.ui_styles.setup_randomize_button(
+                toprow.ui_styles.randomize,
+                scripts.scripts_txt2img.script('Sampler').sampler_name,
+                scripts.scripts_txt2img.script('Sampler').scheduler,
+                steps,
+                cfg_scale,
+            )
+
         extra_networks_ui = ui_extra_networks.create_ui(txt2img_interface, [txt2img_generation_tab], 'txt2img')
         ui_extra_networks.setup_ui(extra_networks_ui, output_panel.gallery)
 
@@ -886,6 +894,14 @@ def create_ui():
             toprow.ui_styles.dropdown.change(fn=wrap_queued_call(update_negative_prompt_token_counter), inputs=[toprow.negative_prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.negative_token_counter])
             toprow.token_button.click(fn=update_token_counter, inputs=[toprow.prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.token_counter])
             toprow.negative_token_button.click(fn=wrap_queued_call(update_negative_prompt_token_counter), inputs=[toprow.negative_prompt, steps, toprow.ui_styles.dropdown], outputs=[toprow.negative_token_counter])
+
+            toprow.ui_styles.setup_randomize_button(
+                toprow.ui_styles.randomize,
+                scripts.scripts_img2img.script('Sampler').sampler_name,
+                scripts.scripts_img2img.script('Sampler').scheduler,
+                steps,
+                cfg_scale,
+            )
 
             img2img_paste_fields = [
                 (toprow.prompt, "Prompt"),

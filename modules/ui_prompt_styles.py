@@ -12,6 +12,12 @@ config_open_symbol = "\U0001f5c3"  # 🗃
 config_path = os.path.join(script_path, "randomize_sampler_config.json")
 randomize_config = {}
 
+import gradio as gr
+
+from modules import shared, ui_common, ui_components, styles
+
+random_symbol = "\U0001f3b2\ufe0f"  # 🎲
+
 styles_edit_symbol = '\U0001f58c\uFE0F'  # 🖌️
 styles_materialize_symbol = '\U0001f4cb'  # 📋
 styles_copy_symbol = '\U0001f4dd'  # 📝
@@ -124,6 +130,17 @@ def randomize_sampler():
 
     return sampler, scheduler, steps, cfg, dcfg
 
+def randomize_sampler():
+    import random
+    from modules import sd_samplers, sd_schedulers
+
+    sampler = random.choice(sd_samplers.visible_sampler_names())
+    scheduler = random.choice([x.label for x in sd_schedulers.schedulers])
+    steps = random.randint(10, 50)
+    cfg = round(random.uniform(1, 10), 1)
+
+    return sampler, scheduler, steps, cfg
+
 
 class UiPromptStyles:
     def __init__(self, tabname, main_ui_prompt, main_ui_negative_prompt):
@@ -137,6 +154,8 @@ class UiPromptStyles:
             self.randomize = ui_components.ToolButton(value=slot_machine_symbol, elem_id=f"{tabname}_randomize_sampling", tooltip="Randomize sampler settings")
             self.edit_randomize = ui_components.ToolButton(value=config_open_symbol, elem_id=f"{tabname}_randomize_config_open", tooltip="Open configuration file for randomize sampler")
             self.refresh_randomize = ui_components.ToolButton(value=ui_common.refresh_symbol, elem_id=f"{tabname}_randomize_config_refresh", tooltip="Refresh randomize sampler configuration")
+
+            self.randomize = ui_components.ToolButton(value=random_symbol, elem_id=f"{tabname}_randomize_sampling", tooltip="Randomize sampler settings")
 
         with gr.Box(elem_id=f"{tabname}_styles_dialog", elem_classes="popup-dialog") as styles_dialog:
             with gr.Row():
@@ -202,6 +221,24 @@ class UiPromptStyles:
     def setup_randomize_config_buttons(self, open_button, refresh_button):
         open_button.click(fn=open_randomize_config_file, inputs=[], outputs=[], show_progress=False)
         refresh_button.click(fn=refresh_randomize_config, inputs=[], outputs=[], show_progress=False)
+
+
+        self.copy.click(
+            fn=lambda p, n: (p, n),
+            inputs=[main_ui_prompt, main_ui_negative_prompt],
+            outputs=[self.prompt, self.neg_prompt],
+            show_progress=False,
+        )
+
+        ui_common.setup_dialog(button_show=edit_button, dialog=styles_dialog, button_close=self.close)
+
+    def setup_randomize_button(self, button, sampler_name, scheduler, steps, cfg):
+        button.click(
+            fn=randomize_sampler,
+            inputs=[],
+            outputs=[sampler_name, scheduler, steps, cfg],
+            show_progress=False,
+        )
 
     def setup_apply_button(self, button):
         button.click(

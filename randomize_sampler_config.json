@@ -5,6 +5,26 @@
   "max_distilled_cfg": 10,
   "min_steps": 10,
   "max_steps": 50,
-  "samplers": [],
-  "schedulers": []
+  "samplers": [
+	"DPM++ 2M",
+	"DPM++ SDE",
+	"DPM++ 2M SDE", 
+	"DPM++ 2M SDE Heun",
+	"DPM++ 2S a",
+	"DPM++ 3M SDE",
+	"Euler a",
+	"Euler",
+	"DPM2",
+	"DPM2 a",
+	"Restart"
+  ],
+  "schedulers": [
+	"Karras",
+	"Exponential",
+	"SGM Uniform",
+	"KL Optimal",
+	"Simple",
+	"Normal",
+	"Beta"
+  ]
 }

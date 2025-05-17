@@ -1,10 +1,15 @@
 import inspect
-import types
 import warnings
 from functools import wraps
 
 import gradio as gr
 import gradio.component_meta
+
+# Older extensions may still reference the legacy IOComponent class which was
+# removed in newer versions of Gradio.  Create an alias pointing to the current
+# base Component class so those extensions continue to work.
+if not hasattr(gr.components, "IOComponent"):
+    gr.components.IOComponent = gr.components.Component
 
 
 from modules import scripts, ui_tempdir, patches

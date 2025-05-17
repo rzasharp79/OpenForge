@@ -2,6 +2,8 @@ import gradio as gr
 
 from modules import shared, ui_common, ui_components, styles
 
+random_symbol = "\U0001f3b2\ufe0f"  # 🎲
+
 styles_edit_symbol = '\U0001f58c\uFE0F'  # 🖌️
 styles_materialize_symbol = '\U0001f4cb'  # 📋
 styles_copy_symbol = '\U0001f4dd'  # 📝
@@ -53,6 +55,18 @@ def refresh_styles():
     return gr.update(choices=list(shared.prompt_styles.styles)), gr.update(choices=list(shared.prompt_styles.styles))
 
 
+def randomize_sampler():
+    import random
+    from modules import sd_samplers, sd_schedulers
+
+    sampler = random.choice(sd_samplers.visible_sampler_names())
+    scheduler = random.choice([x.label for x in sd_schedulers.schedulers])
+    steps = random.randint(10, 50)
+    cfg = round(random.uniform(1, 10), 1)
+
+    return sampler, scheduler, steps, cfg
+
+
 class UiPromptStyles:
     def __init__(self, tabname, main_ui_prompt, main_ui_negative_prompt):
         self.tabname = tabname
@@ -62,6 +76,7 @@ class UiPromptStyles:
         with gr.Row(elem_id=f"{tabname}_styles_row"):
             self.dropdown = gr.Dropdown(label="Styles", show_label=False, elem_id=f"{tabname}_styles", choices=list(shared.prompt_styles.styles), value=[], multiselect=True, tooltip="Styles")
             edit_button = ui_components.ToolButton(value=styles_edit_symbol, elem_id=f"{tabname}_styles_edit_button", tooltip="Edit styles")
+            self.randomize = ui_components.ToolButton(value=random_symbol, elem_id=f"{tabname}_randomize_sampling", tooltip="Randomize sampler settings")
 
         with gr.Box(elem_id=f"{tabname}_styles_dialog", elem_classes="popup-dialog") as styles_dialog:
             with gr.Row():
@@ -113,6 +128,14 @@ class UiPromptStyles:
         )
 
         ui_common.setup_dialog(button_show=edit_button, dialog=styles_dialog, button_close=self.close)
+
+    def setup_randomize_button(self, button, sampler_name, scheduler, steps, cfg):
+        button.click(
+            fn=randomize_sampler,
+            inputs=[],
+            outputs=[sampler_name, scheduler, steps, cfg],
+            show_progress=False,
+        )
 
     def setup_apply_button(self, button):
         button.click(

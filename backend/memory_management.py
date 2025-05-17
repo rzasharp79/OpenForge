@@ -5,10 +5,16 @@ import time
 import psutil
 import torch
 import platform
+import logging
 
 from enum import Enum
 from backend import stream, utils
 from backend.args import args
+
+# Suppress Triton-related warning emitted by xformers when Triton is not present
+logging.getLogger("xformers").addFilter(
+    lambda record: 'A matching Triton is not available' not in record.getMessage()
+)
 
 
 cpu = torch.device('cpu')

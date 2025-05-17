@@ -213,6 +213,38 @@ Requested path was: {path}
         subprocess.Popen(["xdg-open", path])
 
 
+def open_file_in_editor(path):
+    """Open a file in user's preferred text editor."""
+    import gradio as gr
+    import platform
+    import subprocess
+
+    if not os.path.exists(path):
+        msg = f'File "{path}" does not exist.'
+        print(msg)
+        gr.Warning(msg)
+        return
+
+    editor = os.environ.get("EDITOR") or os.environ.get("VISUAL")
+
+    path = os.path.normpath(path)
+    if editor:
+        try:
+            subprocess.Popen([editor, path])
+            return
+        except Exception as exc:
+            print(f"Failed to open {path} with {editor}: {exc}")
+
+    if platform.system() == "Windows":
+        os.startfile(path)
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", path])
+    elif "microsoft-standard-WSL2" in platform.uname().release:
+        subprocess.Popen(["explorer.exe", subprocess.check_output(["wslpath", "-w", path])])
+    else:
+        subprocess.Popen(["xdg-open", path])
+
+
 def load_file_from_url(
     url: str,
     *,

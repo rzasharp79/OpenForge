@@ -546,6 +546,7 @@ def create_ui():
                 scripts.scripts_txt2img.script('Sampler').scheduler,
                 steps,
                 cfg_scale,
+                distilled_cfg_scale,
             )
 
         extra_networks_ui = ui_extra_networks.create_ui(txt2img_interface, [txt2img_generation_tab], 'txt2img')
@@ -901,6 +902,7 @@ def create_ui():
                 scripts.scripts_img2img.script('Sampler').scheduler,
                 steps,
                 cfg_scale,
+                distilled_cfg_scale,
             )
 
             img2img_paste_fields = [

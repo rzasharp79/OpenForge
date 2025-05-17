@@ -1,0 +1,10 @@
+{
+  "min_cfg": 1,
+  "max_cfg": 10,
+  "min_distilled_cfg": 0,
+  "max_distilled_cfg": 10,
+  "min_steps": 10,
+  "max_steps": 50,
+  "samplers": [],
+  "schedulers": []
+}

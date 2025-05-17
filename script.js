@@ -212,3 +212,17 @@ function uiElementInSight(el) {
 
     return isOnScreen;
 }
+
+// Capture console errors and display them in the txt2img console accordion
+window.sd_console_errors = [];
+const origConsoleError = console.error.bind(console);
+console.error = function(...args) {
+    origConsoleError(...args);
+    const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
+    window.sd_console_errors.push(msg);
+    const app = gradioApp();
+    const el = app.querySelector('#txt2img_console');
+    if (el) {
+        el.innerText = window.sd_console_errors.join('\n');
+    }
+};

@@ -156,6 +156,7 @@ class OutputPanel:
     infotext = None
     html_log = None
     button_upscale = None
+    console = None
 
 
 def create_output_panel(tabname, outdir, toprow=None):
@@ -257,6 +258,10 @@ def create_output_panel(tabname, outdir, toprow=None):
                             res.html_log,
                         ]
                     )
+
+                if tabname == "txt2img":
+                    with gr.Accordion(label="Console", open=False, elem_id="txt2img_console"):
+                        res.console = gr.HTML(elem_id="console_txt2img")
 
             else:
                 res.generation_info = gr.HTML(elem_id=f'html_info_x_{tabname}')
